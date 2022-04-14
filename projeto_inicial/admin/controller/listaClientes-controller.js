@@ -1,6 +1,6 @@
 import { clienteService } from '../service/cliente-service.js'
 // função para guardar a linha a ser inserida no corpo da tabela do arquivo HTML lista_cliente.html
-const criaNovaLinha = (nome, email) => {
+const criaNovaLinha = (nome, email, id) => {
     const linhaNovoCliente = document.createElement('tr'); //criando a linha na tabela HTML
     const conteudo = `
     <td class="td" data-td>${nome}</td>
@@ -13,16 +13,27 @@ const criaNovaLinha = (nome, email) => {
                 </td> 
                 `
     linhaNovoCliente.innerHTML = conteudo; //inserindo o conteúdo na linha da tabela
-
+    linhaNovoCliente.dataset.id = id //criando um data-attribute 
     return linhaNovoCliente;
 }
 
 const tabela = document.querySelector('[data-tabela]') //requisitando o elemento HTML com o data-attribute data-tabela
+tabela.addEventListener('click', (evento) => {
+   let ehBotaoDeletar =  evento.target.className === 'botao-simples botao-simples--excluir'
+   if(ehBotaoDeletar) {
+       const linhaCliente = evento.target.closest('[data-id]') //buscando o elemento pai mais próximo do alvo do evento
+       let id = linhaCliente.dataset.id
+       clienteService.removeCliente(id)
+       .then(() => {
+           linhaCliente.remove()
+       })
+   }
+})
 
 clienteService.listaClientes() //chamada da função
 .then(data => { // retorno da promessa
             data.forEach(elemento => {
-                tabela.appendChild(criaNovaLinha(elemento.nome, elemento.email))
+                tabela.appendChild(criaNovaLinha(elemento.nome, elemento.email, elemento.id))
                 // iterando o objeto com o método forEach() e adicionando a função criaNovaLinha(que cria <tr>) ao elemento pai <tbody> com o método appendChild()
        })
 })
