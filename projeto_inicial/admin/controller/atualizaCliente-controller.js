@@ -8,19 +8,27 @@ import { clienteService } from "../service/cliente-service.js"
     const inputNome = document.querySelector('[data-nome]') // capturando o imput nome
     const inputEmail = document.querySelector('[data-email]') // capturando o imput email
 
-    const dados = await clienteService.detalhaCliente(id)
-    
+    try {
+        const dados = await clienteService.detalhaCliente(id)
         inputNome.value = dados.nome // valor que pegamos da API
         inputEmail.value = dados.email // valor que pegamos da API
-
+    } catch (erro) {
+        console.log(erro)
+        window.location.href = '../telas/erro.html'
+    }
 
     const formulario = document.querySelector('[data-form]') //capturando o formulário através do data-attribute
 
     formulario.addEventListener('submit', async (evento) => {
     evento.preventDefault()  //previnindo o formulário de ser executado antes do código abaixo
-
+    
+    try {
     await clienteService.atualizaCliente(id, inputNome.value,inputEmail.value)
     window.location.href = '../telas/edicao_concluida.html'
+    } catch (erro) {
+        console.log(erro)
+        window.location.href = '../telas/erro.html'
+    }
 })
-}) ()
+}) () //IIFE função autoexecutável
 
