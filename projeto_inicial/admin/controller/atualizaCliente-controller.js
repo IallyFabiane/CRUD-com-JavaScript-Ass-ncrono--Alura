@@ -12,3 +12,14 @@ clienteService.detalhaCliente(id)
     inputNome.value = dados.nome // valor que pegamos da API
     inputEmail.value = dados.email // valor que pegamos da API
 })
+
+const formulario = document.querySelector('[data-form]') //capturando o formulário através do data-attribute
+
+formulario.addEventListener('submit', (evento) => {
+    evento.preventDefault()  //previnindo o formulário de ser executado antes do código abaixo
+
+    clienteService.atualizaCliente(id, inputNome.value,inputEmail.value)
+    .then(() => {
+        window.location.href = '../telas/edicao_concluida.html'
+    })
+})
