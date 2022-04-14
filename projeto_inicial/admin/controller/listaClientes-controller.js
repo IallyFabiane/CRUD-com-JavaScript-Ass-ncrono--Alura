@@ -18,22 +18,22 @@ const criaNovaLinha = (nome, email, id) => {
 }
 
 const tabela = document.querySelector('[data-tabela]') //requisitando o elemento HTML com o data-attribute data-tabela
-tabela.addEventListener('click', (evento) => {
+tabela.addEventListener('click', async (evento) => {
    let ehBotaoDeletar =  evento.target.className === 'botao-simples botao-simples--excluir'
    if(ehBotaoDeletar) {
        const linhaCliente = evento.target.closest('[data-id]') //buscando o elemento pai mais próximo do alvo do evento
        let id = linhaCliente.dataset.id
-       clienteService.removeCliente(id)
-       .then(() => {
-           linhaCliente.remove()
-       })
+       await clienteService.removeCliente(id)
+       linhaCliente.remove()
    }
 })
 
-clienteService.listaClientes() //chamada da função
-.then(data => { // retorno da promessa
-            data.forEach(elemento => {
-                tabela.appendChild(criaNovaLinha(elemento.nome, elemento.email, elemento.id))
-                // iterando o objeto com o método forEach() e adicionando a função criaNovaLinha(que cria <tr>) ao elemento pai <tbody> com o método appendChild()
-       })
+const render = async () => {
+    const listaClientes = await clienteService.listaClientes() //chamada da função
+            listaClientes.forEach(elemento => {
+            tabela.appendChild(criaNovaLinha(elemento.nome, elemento.email, elemento.id))
+            // iterando o objeto com o método forEach() e adicionando a função criaNovaLinha(que cria <tr>) ao elemento pai <tbody> com o método appendChild()
 })
+}
+
+render()
